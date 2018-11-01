@@ -9,14 +9,43 @@ use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function all(Request $request) {
+    
+        $user = Auth::user(); 
+        $events = Event::where('owner_id', $user->id)->get();
+
+            $response = [
+                'events' => $events
+            ];
+            return response()->json($events, 200);
+    }
+
+    public function search(Request $request)
     {
-        //
+        $title = $request->title;
+        $events = Event::where('title', $title)->get();
+        
+        $response = [
+            'events' => $events
+        ];
+        return response()->json($events, 200);
+    }
+
+    public function index($id)
+    {
+        $event = Event::find($id);
+
+        return response()->json($event, 200);
     }
 
     /**
@@ -36,10 +65,9 @@ class EventController extends Controller
 
         if ($event->save()) {
             $response = [
-                'msg' => 'Added a new event',
                 'event' => $event
             ];
-            return response()->json($response, 201);
+            return response()->json($event, 201);
         };
     }
 

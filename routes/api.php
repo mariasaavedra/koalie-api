@@ -27,10 +27,20 @@ Route::prefix('v1')->group(function () {
 
     //Events
     Route::prefix('event')->group(function () {
+        Route::get('/', 'EventController@all');
+        Route::get('/{id}', 'EventController@index');
+        Route::post('/search', 'EventController@search');
         Route::group(['middleware' => 'auth:api'], function(){
             Route::post('create', 'EventController@store');
             Route::post('join', 'EventController@join');
             Route::post('leave', 'EventController@leave');
         });
+    });
+
+    //Media
+    Route::prefix('media')->group(function () {
+        Route::post('create', 'MediaController@store');
+        Route::get('/{id}', 'MediaController@feed');
+        Route::get('/', 'MediaController@index');
     });
 });
