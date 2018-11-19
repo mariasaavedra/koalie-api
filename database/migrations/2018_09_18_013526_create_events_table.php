@@ -18,7 +18,11 @@ class CreateEventsTable extends Migration
             $table->timestamps();
             $table->string('title');
             $table->integer('length');
-            $table->integer('owner_id');
+            $table->integer('admin_id');
+            $table->string('attachment_url')->nullable();
+            $table->boolean('public');
+            $table->date('date_start');
+            $table->date('date_end');
         });
     }
 

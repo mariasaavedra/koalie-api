@@ -36,4 +36,10 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'facebook' => [
+        'client_id' => env('1195138980641547'),
+        'client_secret' => env('32b8e89586c62557437e03da6c93127b'),
+        'redirect' => env('http://koalie.test/api/v1/facebook/login'),
+    ],
+
 ];

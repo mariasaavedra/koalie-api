@@ -25,6 +25,10 @@ Route::prefix('v1')->group(function () {
         Route::post('details', 'UserController@details');
     });
 
+    Route::get('auth/callback/facebook', 'FacebookController@callback');
+    Route::get('auth/redirect/facebook', 'FacebookController@redirect');
+
+
     //Events
     Route::prefix('event')->group(function () {
         Route::get('/', 'EventController@all');

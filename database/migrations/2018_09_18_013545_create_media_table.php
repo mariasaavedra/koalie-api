@@ -18,6 +18,7 @@ class CreateMediaTable extends Migration
             $table->timestamps();
             $table->integer('event_id');
             $table->integer('user_id');
+            $table->string('username');
             $table->string('attachment_url')->nullable();
             $table->integer('upvotes')->default(0);
         });

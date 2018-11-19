@@ -22,7 +22,7 @@ class EventController extends Controller
     public function all(Request $request) {
     
         $user = Auth::user(); 
-        $events = Event::where('owner_id', $user->id)->get();
+        $events = Event::where('admin_id', $user->id)->get();
 
             $response = [
                 'events' => $events
@@ -33,7 +33,7 @@ class EventController extends Controller
     public function search(Request $request)
     {
         $title = $request->title;
-        $events = Event::where('title', $title)->get();
+        $events = Event::where('title', 'LIKE', '%'.$title.'%')->get();
         
         $response = [
             'events' => $events
@@ -61,7 +61,7 @@ class EventController extends Controller
 
         $event->title = $request->title;
         $event->length = $request->length;
-        $event->owner_id = $user->id;
+        $event->admin_id = $user->id;
 
         if ($event->save()) {
             $response = [
