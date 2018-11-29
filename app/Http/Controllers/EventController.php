@@ -6,6 +6,8 @@ use App\Event;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -22,7 +24,26 @@ class EventController extends Controller
     public function all(Request $request) {
     
         $user = Auth::user(); 
-        $events = Event::where('admin_id', $user->id)->get();
+        //$events = Event::where('admin_id', $user->id)->orWhere()->get();
+        $events = $user->events()->get();
+
+
+        foreach ($events as $e) {
+            $now = Carbon::now();
+            $diff = $now->diffInHours($e->date_end, false);
+
+            if($diff <= 0){
+                $diff = 0;
+                $e->active = 0;
+                $e->save();
+            }
+
+            $count = DB::table('event_user')
+                ->where('event_id', $e->id)
+                ->count();
+            $e['people_count'] = $count;
+            $e['hours_left'] = $diff;
+        }
 
             $response = [
                 'events' => $events
@@ -62,13 +83,42 @@ class EventController extends Controller
         $event->title = $request->title;
         $event->length = $request->length;
         $event->admin_id = $user->id;
+        $event->public = $request->public;
+        $event->date_start = $request->date_start;
+        $event->date_end = $request->date_end;
+        $event->attachment_url = "default";
+        $event->slot_num = 5;
 
-        if ($event->save()) {
+        $event->save();
+
+        if ($event->users()->save($user)) {
             $response = [
                 'event' => $event
             ];
             return response()->json($event, 201);
         };
+    }
+
+    public function join($id)
+    {
+        $user = Auth::user(); 
+        $event = Event::find($id);
+        
+        $joined = DB::table('event_user')->where([
+            ['user_id', '=', $user->id],
+            ['event_id', '=', $event->id],
+        ])->exists();
+
+        if (!($joined)){
+            if ( $user->events()->save($event)) {
+                $response = [
+                    'event' => $event
+                ];
+                return response()->json($event, 201);
+            };
+        }
+
+        return response()->json($event, 200);
     }
 
     /**

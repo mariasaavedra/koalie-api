@@ -8,8 +8,11 @@ class Event extends Model
 {
     public function users()
     {
-        return $this->hasMany('App\User');
-        
+        return $this->belongsToMany('App\User');
+    }
+
+    public function media()
+    {
         return $this->hasMany('App\Media');
     }
 }

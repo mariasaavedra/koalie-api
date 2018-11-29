@@ -30,6 +30,6 @@ class User extends Authenticatable
 
     public function upvotes()
     {
-        return $this->hasMany('App\Event');
+        return $this->hasMany('App\Upvote');
     }
 }

@@ -58,6 +58,13 @@ class MediaController extends Controller
     }
 
 
+    public function upvote($id){
+        $user = Auth::user(); 
+        $media = Media::find($id);
+        $media->upvotes += 1;
+
+        return response()->json($media, 200);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -77,14 +84,19 @@ class MediaController extends Controller
             if (strpos($mime, 'image') !== false) {
                 $path = $request->file('attachment')->store('/');
             } 
+            // If it's a video..
+            if (strpos($mime, 'video') !== false) {
+                $path = $request->file('attachment')->store('/');
+            } 
         }
         
         $media = new Media;
 
         $media->user_id = $user->id;
         $media->username = $user->name;
-        $media->event_id = 1;
+        $media->event_id = $request->event_id;
         $media->attachment_url = $path;
+        
 
         $event_id = $media->event_id;
         
@@ -100,55 +112,6 @@ class MediaController extends Controller
             }
             return response()->json($media, 201);
         }
-/*
-        $vp_1 = "http://koalie.test/storage/app/public/IMG_0546.MOV";
-        $vp_2 = "http://koalie.test/storage/app/public/IMG_0548.MOV";
-        $vp_3 = "http://koalie.test/storage/app/public/IMG_0550.MOV";
-        $vp_4 = "http://koalie.test/storage/app/public/IMG_0552.MOV";
-        */
-
-       /* $ffmpeg = FFMpeg\FFMpeg::create();
-
-        return $ffmpeg;
-        
-        $video = $ffmpeg->open( $vp_1 );
-
-        $format = new FFMpeg\Format\Video\X264();
-        $format->setAudioCodec("libmp3lame");
-
-        $video
-        ->concat(array($vp_1, $vp_2))
-        ->saveFromDifferentCodecs($format, '/Users/mariasaavedra/Documents');*/
-        /*
-        $video = $ffmpeg->open( '/path/to/video' );
-
-        $format = new FFMpeg\Format\Video\X264();
-        $format->setAudioCodec("libmp3lame");
-
-        $video
-        ->concat(array('/path/to/video1', '/path/to/video2'))
-        ->saveFromDifferentCodecs($format, '/path/to/new_file');
-        */
-
-       //return "OK";
-/*
-        $media = new Media;
-
-        $media->user_id = $user->id;
-        $media->username = $user->name;
-        $media->event_id = 1;
-        $media->attachment_url = $path;
-
-        
-
-        if ($media->save()) {
-
-            $media->toArray();
-            $media["username"] = $user->name;
-
-            return response()->json($media, 201);
-        };
-        */
     }
 
     /**

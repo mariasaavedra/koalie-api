@@ -18,9 +18,11 @@ class CreateEventsTable extends Migration
             $table->timestamps();
             $table->string('title');
             $table->integer('length');
+            $table->integer('slot_num');
             $table->integer('admin_id');
             $table->string('attachment_url')->nullable();
             $table->boolean('public');
+            $table->boolean('active')->default(1);
             $table->date('date_start');
             $table->date('date_end');
         });

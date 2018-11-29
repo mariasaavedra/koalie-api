@@ -25,8 +25,7 @@ Route::prefix('v1')->group(function () {
         Route::post('details', 'UserController@details');
     });
 
-    Route::get('auth/callback/facebook', 'FacebookController@callback');
-    Route::get('auth/redirect/facebook', 'FacebookController@redirect');
+    Route::post('callback/facebook', 'FacebookController@callback');
 
 
     //Events
@@ -36,7 +35,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/search', 'EventController@search');
         Route::group(['middleware' => 'auth:api'], function(){
             Route::post('create', 'EventController@store');
-            Route::post('join', 'EventController@join');
+            Route::post('join/{id}', 'EventController@join');
             Route::post('leave', 'EventController@leave');
         });
     });
@@ -44,6 +43,7 @@ Route::prefix('v1')->group(function () {
     //Media
     Route::prefix('media')->group(function () {
         Route::post('create', 'MediaController@store');
+        Route::post('/{id}/upvote', 'MediaController@upvote');
         Route::get('/{id}', 'MediaController@feed');
         Route::get('/', 'MediaController@index');
     });
